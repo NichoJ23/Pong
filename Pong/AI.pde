@@ -90,11 +90,6 @@ class AI {
       remainingY = bounds - remainingY + 2*ball.getRad() + 1;
     }
     
-    println(targetPos.y);
-    println(remainingY);
-    println(flips);
-    println(targetPos.x, targetPos.y);
-    
     float side = (ball.dir.y * pow(-1, totalFlips) > 0) ? 1: -1;
     return remainingY + 1.3 * rightPaddle.getRad() * side;
   }

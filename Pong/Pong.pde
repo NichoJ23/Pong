@@ -8,6 +8,8 @@ Paddle leftPaddle, rightPaddle;
 Ball ball;
 
 int leftScore, rightScore;
+int winThreshold;
+String winner;
 
 boolean w, s, up, down;
 
@@ -22,7 +24,7 @@ int scoredFrame;
 boolean AIOn;
 AI ai;
 
-ArrayList<ButtonShell> introButtons;
+ArrayList<ButtonShell> introButtons, difficultyButtons, gameOverButtons;
 
 void setup() {
   size(800, 800);
@@ -41,7 +43,11 @@ void setup() {
   leftPaddle.fillColour = #B0DAFF;
   rightPaddle.fillColour = #19A7CE;
   
-  ball = new Ball(new PVector(width/2, height/2), 5, 50);
+  ball = new Ball(new PVector(width/2, height/2), 2, 5, 50);
+  
+  leftScore = rightScore = 0;
+  winThreshold = 5;
+  winner = "";
   
   lettersDown = new ArrayList<Character>();
   keysDown = new ArrayList<Integer>();
@@ -82,9 +88,43 @@ void draw() {
 
 void setupUI() {
   introButtons = new ArrayList<ButtonShell>();
+  difficultyButtons = new ArrayList<ButtonShell>();
+  gameOverButtons = new ArrayList<ButtonShell>();
   
   Executable twoPlayer = () -> {mode = Modes.GAME; AIOn = false;};
   Executable singlePlayer = () -> {mode = Modes.DIFFICULTY; AIOn = true;};
   
-  introButtons.add(new RectButton(width / 4, height * 3 / 4, 200, 100, #B0DAFF, GREY, 10, "1v1", twoPlayer));
+  Executable easyAI = () -> {ai.difficulty = Difficulty.EASY; mode = Modes.GAME;};
+  Executable insaneAI = () -> {ai.difficulty = Difficulty.INSANE; mode = Modes.GAME;};
+  
+  Executable playAgain = () -> {rematch();};
+  Executable menu = () -> {backToMenu();};
+  
+  introButtons.add(new RectButton(width / 4, height * 3 / 4, 300, 150, #B0DAFF, GREY, 10, "1v1", twoPlayer));
+  introButtons.add(new RectButton(width * 3 / 4, height * 3 / 4, 300, 150, #B0DAFF, GREY, 10, "AI", singlePlayer));
+  
+  difficultyButtons.add(new RectButton(width / 4, height / 2, 300, 150, #B0DAFF, GREY, 10, "EASY", easyAI));
+  difficultyButtons.add(new RectButton(width *3 / 4, height / 2, 300, 150, #B0DAFF, GREY, 10, "INSANE", insaneAI));
+  
+  gameOverButtons.add(new RectButton(width / 4, height * 3 / 4, 300, 150, #B0DAFF, GREY, 10, "AGAIN", playAgain));
+  gameOverButtons.add(new RectButton(width * 3 / 4, height * 3 / 4, 300, 150, #B0DAFF, GREY, 10, "MENU", menu));
+}
+
+void rematch() {
+  mode = Modes.GAME;
+  
+  leftScore = rightScore = 0;
+  leftPaddle.pos.y = rightPaddle.pos.y = height / 2;
+  ball.reset();
+}
+
+void backToMenu() {
+  mode = Modes.INTRO;
+  
+  leftScore = rightScore = 0;
+  leftPaddle.pos.y = rightPaddle.pos.y = height / 2;
+  ball.reset();
+  
+  AIOn = false;
+  ai.yPos = height / 2;
 }

@@ -7,17 +7,20 @@ class Ball {
   float speedCap;
   float speedInc;
   float dia;
+  float initialSpeed;
   
   color fillColour;
   color strokeColour;
   float strokeWidth;
   
-  Ball(PVector _pos, float _speed, float _dia) {
+  Ball(PVector _pos, float _initialSpeed, float _speed, float _dia) {
     pos = _pos;
     dir = randomDir();
-    speed = xSpeed = startSpeed = _speed;
-    speedInc = 0.2;
     speedCap = 20;
+    initialSpeed = _initialSpeed;
+    speed = min(speedCap, initialSpeed / abs(dir.x));
+    xSpeed = startSpeed = _speed;
+    speedInc = 0.2;
     dia = _dia;
     
     fillColour = #146C94;
@@ -57,23 +60,36 @@ class Ball {
     
     if (pos.x < -getRad()) {
       rightScore++;
-      mode = Modes.SCORED;
-      scoredFrame = frameCount;
-      reset();
+      
+      if (rightScore >= winThreshold) {
+        mode = Modes.GAMEOVER;
+        winner = "RIGHT";
+      } else {
+        mode = Modes.SCORED;
+        scoredFrame = frameCount;
+        reset();
+      }
     }
     
     if (pos.x > width + getRad()) {
       leftScore++;
-      mode = Modes.SCORED;
-      scoredFrame = frameCount;
-      reset();
+      
+      if (leftScore >= winThreshold) {
+        mode = Modes.GAMEOVER;
+        winner = "LEFT";
+      } else {
+        mode = Modes.SCORED;
+        scoredFrame = frameCount;
+        reset();
+      }
     }
   }
   
   void reset() {
     pos = new PVector(width / 2, height / 2);
-    speed = xSpeed = startSpeed;
+    xSpeed = startSpeed;
     dir = randomDir();
+    speed = min(speedCap, initialSpeed / abs(dir.x));
     leftPaddle.pos.y = rightPaddle.pos.y = ai.yPos = height/2;
     ai.yVel = 0;
   }
@@ -83,8 +99,9 @@ class Ball {
   }
   
   PVector randomDir() {
-    float vx = random(0.3, 1) * -1;//(int)random(0, 2) * 2 - 1;
-    float vy = sqrt(1 - vx*vx);
+    float vx = random(0.3, 1) * (int)random(0, 2) * 2 - 1;
+    float vy = sqrt(1 - vx*vx) * (int)random(0, 2) * 2 - 1;
+    
     
     return new PVector(vx, vy);
   }
