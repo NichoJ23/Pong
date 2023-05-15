@@ -49,6 +49,8 @@ class Ball {
       speed = min(speedCap, xSpeed / abs(dir.x));
       xSpeed += speedInc;
       pos.add(PVector.mult(dir, speed));
+      
+      leftPaddleSound.play();
     }
     
     if (dist(pos.x, pos.y, rightPaddle.pos.x, rightPaddle.pos.y) < getRad() + rightPaddle.getRad()) {
@@ -56,6 +58,8 @@ class Ball {
       speed = min(speedCap, xSpeed / abs(dir.x));
       xSpeed += speedInc;
       pos.add(PVector.mult(dir, speed));
+      
+      leftPaddleSound.play();
     }
     
     if (pos.x < -getRad()) {
@@ -68,6 +72,7 @@ class Ball {
         mode = Modes.SCORED;
         scoredFrame = frameCount;
         reset();
+        score.play();
       }
     }
     
@@ -81,6 +86,7 @@ class Ball {
         mode = Modes.SCORED;
         scoredFrame = frameCount;
         reset();
+        score.play();
       }
     }
   }
@@ -102,9 +108,7 @@ class Ball {
     float vx = random(0.3, 1) * ((int)random(0, 2) * 2 - 1);
     float vy = sqrt(1 - vx*vx) * ((int)random(0, 2) * 2 - 1);
     
-    println(new PVector(vx, vy).mag());
-    println(vx);
-    println(vy);
+
     return new PVector(vx, vy);
   }
 }

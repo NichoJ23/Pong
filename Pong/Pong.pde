@@ -1,7 +1,17 @@
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.effects.*;
+import ddf.minim.signals.*;
+import ddf.minim.spi.*;
+import ddf.minim.ugens.*;
+
 enum Modes {INTRO, GAME, SCORED, GAMEOVER, OPTIONS, PAUSE, DIFFICULTY};
 Modes mode;
 
 PFont font;
+
+Minim minim;
+AudioPlayer wall, victory, score, rightPaddleSound, leftPaddleSound, clapping, intro;
 
 Paddle leftPaddle, rightPaddle;
 
@@ -37,6 +47,15 @@ void setup() {
   textFont(font);
   textAlign(CENTER, CENTER);
   
+  minim = new Minim(this);
+  wall = minim.loadFile("wall.wav");
+  victory = minim.loadFile("victory.mp3");
+  score = minim.loadFile("score.wav");
+  leftPaddleSound = minim.loadFile("leftPaddle.wav");
+  rightPaddleSound = minim.loadFile("rightPaddle.wav");
+  clapping = minim.loadFile("clapping.wav");
+  intro = minim.loadFile("intro.wav");
+  
   leftPaddle = new Paddle(new PVector(-1, height/2), 100);
   rightPaddle = new Paddle(new PVector(width + 1, height/2), 100);
   
@@ -46,7 +65,7 @@ void setup() {
   ball = new Ball(new PVector(width/2, height/2), 2, 5, 50);
   
   leftScore = rightScore = 0;
-  winThreshold = 5;
+  winThreshold = 1;
   winner = "";
   
   lettersDown = new ArrayList<Character>();
@@ -116,6 +135,8 @@ void rematch() {
   leftScore = rightScore = 0;
   leftPaddle.pos.y = rightPaddle.pos.y = height / 2;
   ball.reset();
+  
+  
 }
 
 void backToMenu() {
@@ -127,4 +148,6 @@ void backToMenu() {
   
   AIOn = false;
   ai.yPos = height / 2;
+  
+  intro.rewind();
 }

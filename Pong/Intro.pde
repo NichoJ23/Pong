@@ -7,6 +7,8 @@ void intro() {
   
   
   introUI();
+  
+  intro.play();
 }
 
 void introUI() {
