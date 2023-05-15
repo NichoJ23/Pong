@@ -89,7 +89,7 @@ class Ball {
     pos = new PVector(width / 2, height / 2);
     xSpeed = startSpeed;
     dir = randomDir();
-    speed = min(speedCap, initialSpeed / abs(dir.x));
+    speed = min(5, initialSpeed / abs(dir.x));
     leftPaddle.pos.y = rightPaddle.pos.y = ai.yPos = height/2;
     ai.yVel = 0;
   }
@@ -99,10 +99,12 @@ class Ball {
   }
   
   PVector randomDir() {
-    float vx = random(0.3, 1) * (int)random(0, 2) * 2 - 1;
-    float vy = sqrt(1 - vx*vx) * (int)random(0, 2) * 2 - 1;
+    float vx = random(0.3, 1) * ((int)random(0, 2) * 2 - 1);
+    float vy = sqrt(1 - vx*vx) * ((int)random(0, 2) * 2 - 1);
     
-    
+    println(new PVector(vx, vy).mag());
+    println(vx);
+    println(vy);
     return new PVector(vx, vy);
   }
 }
